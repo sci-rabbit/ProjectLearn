@@ -1,0 +1,7 @@
+settings.py
+.venv
+__pycache__/
+alembic.ini
+.idea/
+
+

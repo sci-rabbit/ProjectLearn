@@ -1,0 +1,32 @@
+# Use postgres/example user/password credentials
+version: '3.9'
+
+services:
+  db:
+    container_name: "db"
+    image: postgres:14.15-alpine3.21
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - custom
+  db_test:
+    container_name: "db_test"
+    image: postgres:14.15-alpine3.21
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres_test
+      - POSTGRES_PASSWORD=postgres_test
+      - POSTGRES_DB=postgres_test
+    ports:
+      - "5438:5432"
+    networks:
+      - custom
+
+networks:
+  custom:
+    driver: bridge
