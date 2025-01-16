@@ -1,22 +1,22 @@
 from uuid import UUID
+
 import pytest
+
 from tests.conftest import get_user_by_id
 
 
 @pytest.mark.asyncio
 async def test_update_user(setup_db, async_client):
-
     await setup_db
 
-    new_user = {"name": "mini",
-                "surname": "pekka",
-                "email": "clashroyal@gmail.com",
-                "password": "sosal?123"}
+    new_user = {
+        "name": "mini",
+        "surname": "pekka",
+        "email": "clashroyal@gmail.com",
+        "password": "sosal?123",
+    }
 
-    update_data = {"name": "MINI",
-                   "surname": "PEKKA",
-                   "password": "SOSAL?123"}
-
+    update_data = {"name": "MINI", "surname": "PEKKA", "password": "SOSAL?123"}
 
     aclient = await async_client
     async with aclient as aclient:
@@ -46,25 +46,27 @@ async def test_update_user(setup_db, async_client):
 
 @pytest.mark.asyncio
 async def test_update_user_with_same_email(setup_db, async_client):
-
     await setup_db
 
-    new_user = {"name": "mini",
-                "surname": "pekka",
-                "email": "clashroyal@gmail.com",
-                "password": "sosal?123"}
+    new_user = {
+        "name": "mini",
+        "surname": "pekka",
+        "email": "clashroyal@gmail.com",
+        "password": "sosal?123",
+    }
 
-    new_user2 = {"name": "bob",
-                "surname": "kenny",
-                "email": "penis@gmail.com",
-                "password": "dsfmskd342234"}
+    new_user2 = {
+        "name": "bob",
+        "surname": "kenny",
+        "email": "penis@gmail.com",
+        "password": "dsfmskd342234",
+    }
 
     update_data = {"email": "clashroyal@gmail.com"}
 
-
     aclient = await async_client
     async with aclient as aclient:
-        resp_post = await aclient.post("/user/users", params=new_user)
+        await aclient.post("/user/users", params=new_user)
         resp_post2 = await aclient.post("/user/users", params=new_user2)
 
         uuid_resp = resp_post2.json()["id"]
@@ -75,56 +77,105 @@ async def test_update_user_with_same_email(setup_db, async_client):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("user_data_for_update, expected_status_code", [
-    ({}, 422),
-    ({"name": "mi",
+@pytest.mark.parametrize(
+    "user_data_for_update, expected_status_code",
+    [
+        ({}, 422),
+        (
+            {
+                "name": "mi",
                 "surname": "pekka",
                 "email": "clashroyal@gmail.com",
-                "password": "sosal?123"}, 422),
-    ({"name": "mini",
+                "password": "sosal?123",
+            },
+            422,
+        ),
+        (
+            {
+                "name": "mini",
                 "surname": "pe",
                 "email": "clashroyal@gmail.com",
-                "password": "sosal?123"}, 422),
-    ({"name": "123",
+                "password": "sosal?123",
+            },
+            422,
+        ),
+        (
+            {
+                "name": "123",
                 "surname": "pekka",
                 "email": "clashroyal@gmail.com",
-                "password": "sosal?123"}, 422),
-    ({"name": "mini",
+                "password": "sosal?123",
+            },
+            422,
+        ),
+        (
+            {
+                "name": "mini",
                 "surname": "123",
                 "email": "clashroyal@gmail.com",
-                "password": "sosal?123"}, 422),
-    ({"name": "mini",
+                "password": "sosal?123",
+            },
+            422,
+        ),
+        (
+            {
+                "name": "mini",
                 "surname": "pekka",
                 "email": "123",
-                "password": "sosal?123"}, 422),
-    ({"name": "mini",
+                "password": "sosal?123",
+            },
+            422,
+        ),
+        (
+            {
+                "name": "mini",
                 "surname": "pekka",
                 "email": "clashroyal@gmail.com",
-                "password": "sosal?1"}, 422),
-    ({"name": "minifrjefrjkkfsdfkgjdkfgjkdfkgdjfkgkjdfjjgkdkfkgjdfjkgdjkkjd",
-      "surname": "pekka",
-      "email": "clashroyal@gmail.com",
-      "password": "sosal?123"}, 422),
-    ({"name": "mini",
-      "surname": "pekkakdfgkefgjkdfkjgjkjkgfkgkfkgkdfgkf",
-      "email": "clashroyal@gmail.com",
-      "password": "sosal?123"}, 422),
-    ({"name": "mini",
-      "surname": "pekka",
-      "email": "clashroyal@gmail.com",
-      "password": "sosal?12kwejrrjwekfrkjfdjkgjkdfjkgfjkdgkdfhgfghjdfjhgdfhgjdfkhjghjkdfgjkdfjkgdjkgkdfgjdfgdk"}, 422),
-    ({"name": "123",
-      "surname": "123",
-      "email": "123",
-      "password": "123"}, 422)
-])
-async def test_update_validation_error(setup_db, async_client, user_data_for_update, expected_status_code):
+                "password": "sosal?1",
+            },
+            422,
+        ),
+        (
+            {
+                "name": "minifrjefrjkkfsdfkgjdkfgjkdfkgdjfkgkjdfjjgkdkfkgjdfjkgdjkkjd",
+                "surname": "pekka",
+                "email": "clashroyal@gmail.com",
+                "password": "sosal?123",
+            },
+            422,
+        ),
+        (
+            {
+                "name": "mini",
+                "surname": "pekkakdfgkefgjkdfkjgjkjkgfkgkfkgkdfgkf",
+                "email": "clashroyal@gmail.com",
+                "password": "sosal?123",
+            },
+            422,
+        ),
+        (
+            {
+                "name": "mini",
+                "surname": "pekka",
+                "email": "clashroyal@gmail.com",
+                "password": "sosal?12kwejrrjwekfrkjfdjkgjkdfjkgfjkdgkdfhgfghjdfjhgdfhgjdfkhjghjkdfgjkdfjkgdjkgkdfgjdfgdk",
+            },
+            422,
+        ),
+        ({"name": "123", "surname": "123", "email": "123", "password": "123"}, 422),
+    ],
+)
+async def test_update_validation_error(
+    setup_db, async_client, user_data_for_update, expected_status_code
+):
     await setup_db
 
-    new_user = {"name": "mini",
-                "surname": "pekka",
-                "email": "clashroyal@gmail.com",
-                "password": "sosal?123"}
+    new_user = {
+        "name": "mini",
+        "surname": "pekka",
+        "email": "clashroyal@gmail.com",
+        "password": "sosal?123",
+    }
 
     aclient = await async_client
     async with aclient as aclient:
@@ -132,6 +183,8 @@ async def test_update_validation_error(setup_db, async_client, user_data_for_upd
 
         uuid_resp = resp_post.json()["id"]
 
-        resp_put = await aclient.put(f"/user/users/{uuid_resp}", params=user_data_for_update)
+        resp_put = await aclient.put(
+            f"/user/users/{uuid_resp}", params=user_data_for_update
+        )
 
         assert resp_put.status_code == expected_status_code

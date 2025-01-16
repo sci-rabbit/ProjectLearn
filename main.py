@@ -1,10 +1,11 @@
-import asyncio
-
+# import asyncio
 import uvicorn
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter
+from fastapi import FastAPI
 
-from db.session import setup_db
 from routes.routes import user_router
+
+# from db.session import setup_db
 
 app = FastAPI()
 main_api_route = APIRouter()
@@ -16,6 +17,6 @@ app.include_router(main_api_route)
 #     await setup_db()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # asyncio.run(main())
     uvicorn.run("main:app", reload=True)

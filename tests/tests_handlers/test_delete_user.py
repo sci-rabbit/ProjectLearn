@@ -1,18 +1,21 @@
 import uuid
 from uuid import UUID
+
 import pytest
+
 from tests.conftest import get_user_by_id
 
 
 @pytest.mark.asyncio
 async def test_delete_user(setup_db, async_client):
-
     await setup_db
 
-    new_user = {"name": "mini",
-                "surname": "pekka",
-                "email": "clashroyal@gmail.com",
-                "password": "sosal?123"}
+    new_user = {
+        "name": "mini",
+        "surname": "pekka",
+        "email": "clashroyal@gmail.com",
+        "password": "sosal?123",
+    }
 
     aclient = await async_client
     async with aclient as aclient:
@@ -40,7 +43,6 @@ async def test_delete_user(setup_db, async_client):
 
 @pytest.mark.asyncio
 async def test_delete_user_fake_uuid(setup_db, async_client):
-
     await setup_db
 
     user_id = uuid.uuid4()

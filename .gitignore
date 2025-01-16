@@ -3,5 +3,3 @@ settings.py
 __pycache__/
 alembic.ini
 .idea/
-
-

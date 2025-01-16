@@ -1,12 +1,12 @@
 import uuid
-from typing import List, Sequence
+from typing import List
 
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 
 from db.dals import UserDAL
-from db.models import User
-from pydantic_models.models import ShowUser, UserCreate
+from pydantic_models.models import ShowUser
+from pydantic_models.models import UserCreate
 
 
 async def _create_user(body: UserCreate, session) -> ShowUser:
@@ -16,10 +16,12 @@ async def _create_user(body: UserCreate, session) -> ShowUser:
             name=body.name,
             surname=body.surname,
             email=body.email,
-            password=body.password
+            password=body.password,
         )
     except IntegrityError:
-        raise HTTPException(status_code=503, detail="User with same email already exist")
+        raise HTTPException(
+            status_code=503, detail="User with same email already exist"
+        )
 
     return ShowUser(
         id=new_user.id,
@@ -27,7 +29,7 @@ async def _create_user(body: UserCreate, session) -> ShowUser:
         surname=new_user.surname,
         email=new_user.email,
         password=new_user.password,
-        is_active=new_user.is_active
+        is_active=new_user.is_active,
     )
 
 
@@ -43,7 +45,7 @@ async def _get_user_by_id(user_id: uuid.UUID, session) -> ShowUser:
         surname=res_user.surname,
         email=res_user.email,
         password=res_user.password,
-        is_active=res_user.is_active
+        is_active=res_user.is_active,
     )
 
 
@@ -63,7 +65,9 @@ async def _update_user_by_id(user_id: uuid.UUID, body: dict, session) -> ShowUse
     try:
         updated_user = await user_dal_obj.update_user(user_id, **body)
     except IntegrityError:
-        raise HTTPException(status_code=503, detail="User with same email already exist")
+        raise HTTPException(
+            status_code=503, detail="User with same email already exist"
+        )
 
     if updated_user is None:
         raise HTTPException(status_code=400, detail="Something went wrong")
@@ -74,7 +78,7 @@ async def _update_user_by_id(user_id: uuid.UUID, body: dict, session) -> ShowUse
         surname=updated_user.surname,
         email=updated_user.email,
         password=updated_user.password,
-        is_active=updated_user.is_active
+        is_active=updated_user.is_active,
     )
 
 
@@ -91,5 +95,5 @@ async def _delete_user_by_id(user_id: uuid.UUID, session):
         surname=deleted_user.surname,
         email=deleted_user.email,
         password=deleted_user.password,
-        is_active=deleted_user.is_active
+        is_active=deleted_user.is_active,
     )
