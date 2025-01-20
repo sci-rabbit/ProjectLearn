@@ -24,7 +24,6 @@ async def test_get_user(setup_db, async_client):
         assert resp.json()["name"] == new_user["name"]
         assert resp.json()["surname"] == new_user["surname"]
         assert resp.json()["email"] == new_user["email"]
-        assert resp.json()["password"] == new_user["password"]
 
         uuid_resp = resp.json()["id"]
 

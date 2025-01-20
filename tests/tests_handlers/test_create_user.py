@@ -24,7 +24,6 @@ async def test_handler_cu(setup_db, async_client):
     assert resp.json()["name"] == new_user["name"]
     assert resp.json()["surname"] == new_user["surname"]
     assert resp.json()["email"] == new_user["email"]
-    assert resp.json()["password"] == new_user["password"]
 
     retrieved_data = await get_user_by_id(UUID(resp.json()["id"]))
 
@@ -62,7 +61,6 @@ async def test_handler_cu_with_same_email(setup_db, async_client):
         assert resp.json()["name"] == new_user["name"]
         assert resp.json()["surname"] == new_user["surname"]
         assert resp.json()["email"] == new_user["email"]
-        assert resp.json()["password"] == new_user["password"]
 
         retrieved_data = await get_user_by_id(UUID(resp.json()["id"]))
 

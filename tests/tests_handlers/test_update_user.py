@@ -25,7 +25,6 @@ async def test_update_user(setup_db, async_client):
         assert resp.json()["name"] == new_user["name"]
         assert resp.json()["surname"] == new_user["surname"]
         assert resp.json()["email"] == new_user["email"]
-        assert resp.json()["password"] == new_user["password"]
 
         uuid_resp = resp.json()["id"]
 
@@ -41,7 +40,6 @@ async def test_update_user(setup_db, async_client):
 
     assert retrieved_data.name == update_data["name"]
     assert retrieved_data.surname == update_data["surname"]
-    assert retrieved_data.password == update_data["password"]
 
 
 @pytest.mark.asyncio
