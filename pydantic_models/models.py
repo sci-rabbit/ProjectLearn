@@ -80,3 +80,8 @@ class UpdateUserResponse(BaseModel):
 
 class DeleteUserResponse(BaseModel):
     id: uuid.UUID
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

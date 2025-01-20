@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from db.dals import UserDAL
 from pydantic_models.models import ShowUser
 from pydantic_models.models import UserCreate
+from utils.hashing import Hasher
 
 
 async def _create_user(body: UserCreate, session) -> ShowUser:
@@ -16,7 +17,7 @@ async def _create_user(body: UserCreate, session) -> ShowUser:
             name=body.name,
             surname=body.surname,
             email=body.email,
-            password=body.password,
+            password=Hasher.get_password_hash(body.password),
         )
     except IntegrityError:
         raise HTTPException(
