@@ -4,6 +4,7 @@ from uuid import UUID
 import pytest
 
 from tests.conftest import get_user_by_id
+from utils.hashing import Hasher
 
 
 @pytest.mark.asyncio
@@ -24,6 +25,10 @@ async def test_get_user(setup_db, async_client):
         assert resp.json()["name"] == new_user["name"]
         assert resp.json()["surname"] == new_user["surname"]
         assert resp.json()["email"] == new_user["email"]
+        assert (
+            Hasher.verify_password(new_user["password"], resp.json()["password"])
+            is True
+        )
 
         uuid_resp = resp.json()["id"]
 
