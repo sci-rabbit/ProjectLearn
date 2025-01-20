@@ -7,12 +7,14 @@ from fastapi import HTTPException
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from db.models import User
 from db.session import get_async_session
 from handlers.handlers_services import _create_user
 from handlers.handlers_services import _delete_user_by_id
 from handlers.handlers_services import _get_user_by_id
 from handlers.handlers_services import _get_users
 from handlers.handlers_services import _update_user_by_id
+from handlers.login_handlers import get_current_user_from_token
 from pydantic_models.models import ShowUser
 from pydantic_models.models import UpdateUserRequest
 from pydantic_models.models import UserCreate
@@ -47,6 +49,7 @@ async def update_user(
     user_id: uuid.UUID,
     body: Annotated[UpdateUserRequest, Depends()],
     session: Annotated[AsyncSession, Depends(get_async_session)],
+    current_user: Annotated[User, Depends(get_current_user_from_token)],
 ) -> ShowUser:
     data_req = body.model_dump(exclude_none=True)
 
@@ -62,7 +65,9 @@ async def update_user(
 
 @user_router.delete("/users/{user_id}")
 async def delete_user(
-    user_id: uuid.UUID, session: Annotated[AsyncSession, Depends(get_async_session)]
+    user_id: uuid.UUID,
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+    current_user: Annotated[User, Depends(get_current_user_from_token)],
 ) -> ShowUser:
     await _get_user_by_id(user_id, session)
 

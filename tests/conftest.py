@@ -1,5 +1,6 @@
 import asyncio
 import uuid
+from datetime import timedelta
 
 import pytest
 from httpx import ASGITransport
@@ -8,11 +9,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
 
+import settings
 from db.models import Base
 from db.models import User
 from db.session import get_async_session
 from main import app
 from settings import TEST_DATABASE_URL
+from utils.security import create_access_token
 
 # import asyncpg
 
@@ -62,3 +65,12 @@ async def get_users():
         retrieved_data = result.scalars().all()
 
     return retrieved_data
+
+
+def create_test_auth_headers_for_user(email: str):
+    access_token = create_access_token(
+        data={"sub": email},
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+    )
+
+    return {"Authorization": f"Bearer {access_token}"}

@@ -2,7 +2,9 @@ from uuid import UUID
 
 import pytest
 
+from tests.conftest import create_test_auth_headers_for_user
 from tests.conftest import get_user_by_id
+from utils.hashing import Hasher
 
 
 @pytest.mark.asyncio
@@ -25,10 +27,18 @@ async def test_update_user(setup_db, async_client):
         assert resp.json()["name"] == new_user["name"]
         assert resp.json()["surname"] == new_user["surname"]
         assert resp.json()["email"] == new_user["email"]
+        assert (
+            Hasher.verify_password(new_user["password"], resp.json()["password"])
+            is True
+        )
 
         uuid_resp = resp.json()["id"]
 
-        resp = await aclient.put(f"/user/users/{uuid_resp}", params=update_data)
+        resp = await aclient.put(
+            f"/user/users/{uuid_resp}",
+            params=update_data,
+            headers=create_test_auth_headers_for_user(new_user["email"]),
+        )
         retrieved_data = await get_user_by_id(UUID(uuid_resp))
 
     assert retrieved_data.id == UUID(resp.json()["id"])
@@ -69,7 +79,11 @@ async def test_update_user_with_same_email(setup_db, async_client):
 
         uuid_resp = resp_post2.json()["id"]
 
-        resp_put = await aclient.put(f"/user/users/{uuid_resp}", params=update_data)
+        resp_put = await aclient.put(
+            f"/user/users/{uuid_resp}",
+            params=update_data,
+            headers=create_test_auth_headers_for_user(new_user["email"]),
+        )
 
     assert resp_put.status_code == 503
 
@@ -182,7 +196,9 @@ async def test_update_validation_error(
         uuid_resp = resp_post.json()["id"]
 
         resp_put = await aclient.put(
-            f"/user/users/{uuid_resp}", params=user_data_for_update
+            f"/user/users/{uuid_resp}",
+            params=user_data_for_update,
+            headers=create_test_auth_headers_for_user(new_user["email"]),
         )
 
         assert resp_put.status_code == expected_status_code
